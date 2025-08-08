@@ -9,6 +9,7 @@ import cookieParser from 'cookie-parser'
 import authRouter from './routes/authRoutes.js'
 import otpRouter from './routes/otpRoutes.js'
 import passwordRouter from './routes/passwordRoutes.js'
+import orderRouter from './routes/orderRoutes.js'
 const app = express()
 
 dotenv.config()
@@ -29,6 +30,7 @@ app.use('/api/v1/cart', cartRouter)
 app.use('/api/v1', authRouter)
 app.use('/api/v1/otp', otpRouter)
 app.use('/api/v1/password', passwordRouter)
+app.use('/api/v1/checkout', orderRouter)
 
 app.listen(port, ()=>{
     console.log(`Our server is up and running on ${port}`)

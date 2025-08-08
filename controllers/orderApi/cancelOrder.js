@@ -1,4 +1,4 @@
-import Order from "../schema/orderSchema.js";
+import Order from "../../schema/orderSchema.js";
 
 
 export const cancelOrder = async (req, res) => {
