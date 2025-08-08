@@ -2,6 +2,10 @@ import Admin from "../../schema/adminSchema.js";
 import bcrypt from 'bcrypt'
 import { sendMail } from "../../utils/sendMail.js";
 export const createAdmin = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
+  }
     const {name,email, password } = req.body
     if(!name || !email || !password){
         return res.status(400).json({message: "Please All Fields are mandatory"})

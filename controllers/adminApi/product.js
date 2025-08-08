@@ -3,6 +3,10 @@ import Product from "../../schema/productSchema.js";
 
 export const viewProduct = async (req, res) => {
     const {id} = req.params
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     try{
         const product = await Product.findById(id).select(' -_id -createdAt -updatedAt -__v')
         res.status(200).json(product)
@@ -12,6 +16,10 @@ export const viewProduct = async (req, res) => {
 }
 
 export const viewProducts = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     try{
         const products = await Product.find().select(' -_id -createdAt -updatedAt -__v')
         res.status(200).json(products)
@@ -22,6 +30,10 @@ export const viewProducts = async (req, res) => {
 
 
 export const getProdByParams = async(req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {name} = req.query
     const filter = {}
     try{
@@ -35,6 +47,10 @@ export const getProdByParams = async(req, res) => {
 
 
 export const deleteProduct = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {id} = req.params
     try{
         const product = await Product.findById(id)

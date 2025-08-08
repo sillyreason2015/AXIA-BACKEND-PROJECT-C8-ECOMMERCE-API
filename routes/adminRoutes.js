@@ -12,21 +12,22 @@ import { adminLogin } from '../controllers/authApi/adminBarrel.js'
 import { adminLogout } from '../controllers/authApi/adminBarrel.js'
 import { resetPassword, requestPassword } from '../controllers/adminApi/adminBarrel.js'
 import { verifyOtp, resendOtp } from '../controllers/adminApi/adminBarrel.js'
-
+import { getAllOrders } from '../controllers/adminApi/adminBarrel.js'
 
 
 adminRouter
 .post('/create', createAdmin)
 .post('/login',adminLogin)
 .post('/logout',adminLogout)
-.post('/password/reset', resetPassword)
-.post('/password/reqreset', requestPassword)
-.post('/otp/verify', verifyOtp)
-.post('/otp/resend', resendOtp)
+.post('/password/reset',adminAuth ,resetPassword)
+.post('/password/reqreset',adminAuth ,requestPassword)
+.post('/otp/verify',adminAuth ,verifyOtp)
+.post('/otp/resend',adminAuth ,resendOtp)
 .get('/users',adminAuth ,viewUsers)
 .get('/user',adminAuth ,getByParams)
 .get('/products',adminAuth ,viewProducts)
 .get('/product',adminAuth ,getProdByParams)
+.get('/orders',adminAuth ,getAllOrders)
 .delete('/delete/:id',adminAuth ,deleteAdmin)
 .put('/update/:id',adminAuth ,updateAdmin )
 .get('/user/:id',adminAuth ,viewUser)

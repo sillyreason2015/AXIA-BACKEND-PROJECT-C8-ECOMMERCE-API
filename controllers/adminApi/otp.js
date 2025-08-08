@@ -3,6 +3,10 @@ import { sendMail } from '../../utils/sendMail.js'
 
 
 export const verifyOtp = async (req, res) => {
+     const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {otp, email} = req.body
     try{
         const admin = await Admin.findOne({email})
@@ -37,6 +41,10 @@ export const verifyOtp = async (req, res) => {
 
 
 export const resendOtp = async (req,res) => {
+     const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {email} = req.body
 
     try{

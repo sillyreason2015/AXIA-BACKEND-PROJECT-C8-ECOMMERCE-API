@@ -3,6 +3,10 @@ import Admin from '../../schema/adminSchema.js'
 
 
 export const viewUser = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     try{
         if(Admin){
     const user = await User.findById(req.params.id).select('-password -_id -createdAt -updatedAt -__v')
@@ -17,6 +21,10 @@ export const viewUser = async (req, res) => {
 }
 
 export const viewUsers = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     try{
         if(Admin){
             const users = await User.find().select('-password -_id -createdAt -updatedAt -__v')
@@ -31,6 +39,10 @@ export const viewUsers = async (req, res) => {
 
 
 export const getByParams = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {username, email} = req.query
     const filter = {}
     if(username) filter.username = username
@@ -46,6 +58,10 @@ export const getByParams = async (req, res) => {
 
 
 export const deleteUser = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+  }
     const {id} = req.params
     if(!Admin){
         return res.status(400).json({message: "You are not authorized to carry out this action"})

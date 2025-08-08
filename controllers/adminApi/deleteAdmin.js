@@ -1,6 +1,10 @@
 import Admin from "../../schema/adminSchema.js";
 
 export const deleteAdmin = async (req, res) => {
+    const { secretKey } = req.headers;
+  if (secretKey !== process.env.ADMIN_SECRET) {
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page" });
+  }
     const {id} = req.params
     const {_id} = req.admin
     if(_id.toString() !== id){
