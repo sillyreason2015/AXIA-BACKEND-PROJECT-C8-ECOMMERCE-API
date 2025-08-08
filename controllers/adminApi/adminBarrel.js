@@ -1,0 +1,7 @@
+export {createAdmin} from '../adminApi/createAdmin.js'
+export {updateAdmin} from '../adminApi/updateAdmin.js'
+export {deleteAdmin} from '../adminApi/deleteAdmin.js'
+export {viewUser, viewUsers, getByParams, deleteUser} from '../adminApi/user.js'
+export {viewProduct, viewProducts, getProdByParams, deleteProduct} from '../adminApi/product.js'
+export {resetPassword, requestPassword} from '../adminApi/password.js'
+export {verifyOtp, resendOtp} from '../adminApi/otp.js'
