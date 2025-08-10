@@ -3,9 +3,10 @@ import { sendMail } from '../../utils/sendMail.js'
 
 
 export const verifyOtp = async (req, res) => {
-     const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+      const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {otp, email} = req.body
     try{
@@ -41,9 +42,10 @@ export const verifyOtp = async (req, res) => {
 
 
 export const resendOtp = async (req,res) => {
-     const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+      const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {email} = req.body
 

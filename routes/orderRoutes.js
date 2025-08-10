@@ -6,7 +6,7 @@ import { createOrder, cancelOrder, getUserOrders } from '../controllers/orderApi
 const orderRouter = router()
 
 orderRouter
-.post('/create', authMiddleware, createOrder)
+.post('/create/:id', authMiddleware, createOrder)
 .post('/cancel/:orderId', authMiddleware, cancelOrder)
 .get('/myorders', authMiddleware, getUserOrders)
 

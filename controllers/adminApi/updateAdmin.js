@@ -1,9 +1,10 @@
 import Admin from "../../schema/adminSchema.js";
 import bcrypt from 'bcrypt'
 export const updateAdmin = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+    const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {id} = req.params
     const{_id} = req.admin

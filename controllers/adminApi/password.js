@@ -4,9 +4,10 @@ import { sendMail } from '../../utils/sendMail.js'
 import crypto from 'crypto'
 
 export const requestPassword = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+    const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {email} = req.body
     try{
@@ -37,9 +38,10 @@ export const requestPassword = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
     const {token, newPassword} = req.body
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+    const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     try{
         const admin = await Admin.findOne({passwordResetToken: token, passwordResetExpires: {$gt: Date.now()}})

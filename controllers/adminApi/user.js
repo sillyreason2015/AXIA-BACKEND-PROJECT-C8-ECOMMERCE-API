@@ -3,9 +3,10 @@ import Admin from '../../schema/adminSchema.js'
 
 
 export const viewUser = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+     const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     try{
         if(Admin){
@@ -21,9 +22,10 @@ export const viewUser = async (req, res) => {
 }
 
 export const viewUsers = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+     const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     try{
         if(Admin){
@@ -39,9 +41,10 @@ export const viewUsers = async (req, res) => {
 
 
 export const getByParams = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+     const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {username, email} = req.query
     const filter = {}
@@ -58,9 +61,10 @@ export const getByParams = async (req, res) => {
 
 
 export const deleteUser = async (req, res) => {
-    const { secretKey } = req.headers;
-  if (secretKey !== process.env.ADMIN_SECRET) {
-    return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
+     const secretKey = req.headers['secretkey']
+  if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
+    console.log(req.headers)
+    return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     const {id} = req.params
     if(!Admin){
