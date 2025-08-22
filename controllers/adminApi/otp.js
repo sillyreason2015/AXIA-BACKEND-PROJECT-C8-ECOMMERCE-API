@@ -1,8 +1,10 @@
 import Admin from '../../schema/adminSchema.js'
 import { sendMail } from '../../utils/sendMail.js'
 
-
+// Verify admin OTP
 export const verifyOtp = async (req, res) => {
+    
+    // Check secret key for authorization
       const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
@@ -27,7 +29,7 @@ export const verifyOtp = async (req, res) => {
         if (new Date(admin.otpExpires) < new Date()) {
             return res.status(400).json({ message: 'OTP has expired. Please request a new one.' });
         }
-        
+        // Mark admin as verified and clear OTP fields
         admin.otp = undefined
         admin.otpExpires = undefined
         admin.isVerified = true
@@ -41,7 +43,9 @@ export const verifyOtp = async (req, res) => {
 
 
 
+// Resend OTP
 export const resendOtp = async (req,res) => {
+    // Check secret key for authorization
       const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
@@ -60,10 +64,12 @@ export const resendOtp = async (req,res) => {
         if(admin.lastOtpSentAt && Date.now() - admin.lastOtpSentAt.getTime() < 2 * 60 * 1000){
             return res.status(429).json({message: "Please try again after 2 minutes"})
         }
+        // Limit OTP resend to every 2 minutes
         if (new Date(admin.otpExpires) < new Date()){
             const newOtp = Math.floor(10000 +Math.random() * 900000)
             const otpExpires = new Date(Date.now() + 5 * 60 * 1000)
-
+            
+            // If current OTP expired, generate a new one
             admin.otp = newOtp
             admin.otpExpires = otpExpires
             admin.lastOtpSentAt = new Date ()

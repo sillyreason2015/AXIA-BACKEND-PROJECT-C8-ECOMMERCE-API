@@ -3,29 +3,33 @@ import bcrypt from 'bcrypt'
 import { sendMail } from '../../utils/sendMail.js'
 import dotenv from 'dotenv'
 
-
+//Load environment variables
 dotenv.config()
 
+// Create a new user with OTP verification
 export const createUser = async (req, res) => {
     const {username, email, password, age, name } = req.body
 
+    // Validate that all fields are provided
    if (!username || !email || !password || !age || !name){
         return res.status(400).json({message: "All Fields are Mandatory"})
    }
     try{
+      // Check if a user with the same email already exists
         const user = await User.findOne({email})
         if(user){
             return res.status(400).json("This user already exists. Please Log in")
         }
 
+         // Generate a 6-digit OTP and expiration timestamp
         const otp = Math.floor(100000 + Math.random() * 900000);
         const otpExpires = new Date(Date.now() + 1000 * 60 * 5).toISOString();
 
-
+         // Hash the user's password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
         
-        
+          // Prepare OTP email
         const newUser = new User ({
         ...req.body,
         password: hashedPassword, 

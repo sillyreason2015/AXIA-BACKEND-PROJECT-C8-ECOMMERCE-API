@@ -3,28 +3,33 @@ import Cart from "../../schema/cartSchema.js";
 import User from "../../schema/userSchema.js";
 import { sendMail } from "../../utils/sendMail.js";
 
+
+// Create a new order from the user's cart
 export const createOrder = async (req, res) => {
   try {
     const userId = req.user._id;
     const { id: cartId } = req.params; 
 
+// Fetch the cart and populate product details
     const cart = await Cart.findById(cartId).populate("products.productId");
     if (!cart) {
       return res.status(404).json({ message: "No cart found" });
     }
+
+     // Ensure the cart has at least one product
     if (cart.products.length === 0) {
       return res.status(400).json({
         message: "No items in Cart. Please add one to place an order now",
       });
     }
-
+ // Collect unique merchant IDs from products in the cart
     const merchantIds = new Set();
     cart.products.forEach((item) => {
       if (item.productId?.userId) {
         merchantIds.add(item.productId.userId.toString());
       }
     });
-
+// Create a new order document
     const newOrder = new Order({
       userId,
       cartId,
@@ -37,9 +42,10 @@ export const createOrder = async (req, res) => {
       totalPrice: cart.totalCartPrice,
       status: "Pending",
     });
-
+ // Save the order to the database
     await newOrder.save();
 
+// Send order confirmation email to the user
     const user = await User.findById(userId);
     await sendMail({
       mailFrom: process.env.EMAIL_USER,
@@ -47,7 +53,7 @@ export const createOrder = async (req, res) => {
       subject: "Order Confirmation",
       body: `Hi ${user.username}, your order (ID: ${newOrder._id}) has been placed successfully. Thanks for shopping with us!`,
     });
-
+// Notify all merchants whose products are in the order
     for (const merchantId of merchantIds) {
       const merchant = await User.findById(merchantId);
       if (merchant?.isMerchant) {
@@ -59,9 +65,12 @@ export const createOrder = async (req, res) => {
         });
       }
     }
-
+    
+// Clear the user's cart after placing the order
     cart.products = [];
     cart.totalCartPrice = 0;
+
+     // Return success response with the new order
     await cart.save();
     res.status(201).json({
       message: "Order placed successfully",

@@ -1,21 +1,27 @@
-import router from 'express'
-import authMiddleware from '../middleware/authMiddleware.js'
+import router from 'express' // Import Express router
+import authMiddleware from '../middleware/authMiddleware.js' // Middleware to protect user routes
 
-import { createCart,  } from '../controllers/cartApi/cartBarrel.js'
+// Import cart-related controller functions
+import { createCart } from '../controllers/cartApi/cartBarrel.js'
 import { viewCart } from '../controllers/cartApi/cartBarrel.js'
 import { updateCart } from '../controllers/cartApi/cartBarrel.js'
 import { deleteCart, deleteCartItem } from '../controllers/cartApi/cartBarrel.js'
 
+const cartRouter = router();  // Create a new router instance
 
-const cartRouter = router()
+// Protected route: Add a product to cart by product ID
+cartRouter.post('/add/:id', authMiddleware, createCart)
 
-cartRouter
-.post('/add/:id',authMiddleware ,createCart)
-.get('/view',authMiddleware ,viewCart)
-.put('/update/:id',authMiddleware ,updateCart)
-.delete('/delete',authMiddleware ,deleteCart)
-.delete('/delete/:id',authMiddleware ,deleteCartItem)
+// Protected route: View the current user's cart
+cartRouter.get('/view', authMiddleware, viewCart)
 
+// Protected route: Update a product in the cart by product ID
+cartRouter.put('/update/:id', authMiddleware, updateCart)
 
+// Protected route: Delete the entire cart for the user
+cartRouter.delete('/delete', authMiddleware, deleteCart)
+
+// Protected route: Delete a specific product from the cart by product ID
+cartRouter.delete('/delete/:id', authMiddleware, deleteCartItem)
 
 export default cartRouter

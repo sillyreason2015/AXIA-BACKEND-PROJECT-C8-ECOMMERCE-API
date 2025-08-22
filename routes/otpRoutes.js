@@ -1,16 +1,14 @@
-import router  from 'express'
-  
+import router from 'express';  // Import Express router
 
-import {verifyOtp, resendOtp} from '../controllers/otpApi/otpBarrel.js'
-
-
+// Import OTP controller functions
+import { verifyOtp, resendOtp } from '../controllers/otpApi/otpBarrel.js'
 
 const otpRouter = router()
 
-otpRouter
-.post('/verify', verifyOtp)
-.post('/resend', resendOtp)
+// Route to verify a user's OTP
+otpRouter.post('/verify', verifyOtp)
 
+// Route to resend a new OTP to the user
+otpRouter.post('/resend', resendOtp)
 
-
-export default otpRouter;
+export default otpRouter;  

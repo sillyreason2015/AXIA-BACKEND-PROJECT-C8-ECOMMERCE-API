@@ -1,14 +1,16 @@
 import Product from "../../schema/productSchema.js";
 
-
+//View a single product by ID
 export const viewProduct = async (req, res) => {
     const {id} = req.params
+    //  only allow requests with valid ADMIN_SECRET
     const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
     return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
     try{
+      // Find product by ID and exclude internal fields
         const product = await Product.findById(id).select(' -_id -createdAt -updatedAt -__v')
         res.status(200).json(product)
     }catch(error){
@@ -16,6 +18,7 @@ export const viewProduct = async (req, res) => {
     }
 }
 
+//get all products
 export const viewProducts = async (req, res) => {
     const { secretKey } = req.headers;
   if (secretKey !== process.env.ADMIN_SECRET) {
@@ -29,8 +32,9 @@ export const viewProducts = async (req, res) => {
     }
 }
 
-
+//Get products filtered by query parameters
 export const getProdByParams = async(req, res) => {
+  //only allow requests with valid ADMIN_SECRET
     const { secretKey } = req.headers;
   if (secretKey !== process.env.ADMIN_SECRET) {
     return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
@@ -38,6 +42,7 @@ export const getProdByParams = async(req, res) => {
     const {name} = req.query
     const filter = {}
     try{
+      // Only filter by name if provided
         if (name) filter.name = name
        const product = await Product.find(filter).select('-_id -createdAt -updatedAt -__v')
         res.status(200).json(product)
@@ -46,14 +51,16 @@ export const getProdByParams = async(req, res) => {
     }
 }
 
-
+//Delete a product by ID
 export const deleteProduct = async (req, res) => {
+  //only allow requests with valid ADMIN_SECRET
     const { secretKey } = req.headers;
   if (secretKey !== process.env.ADMIN_SECRET) {
     return res.status(403).json({ message: "Forbidden. You are not allowed to access this page" });
   }
     const {id} = req.params
     try{
+      // Check if product exists before deleting
         const product = await Product.findById(id)
         if(!product){
             res.status(404).json({message: "Product not found"})

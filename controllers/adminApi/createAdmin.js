@@ -1,31 +1,37 @@
 import Admin from "../../schema/adminSchema.js";
 import bcrypt from 'bcrypt'
 import { sendMail } from "../../utils/sendMail.js";
+
+//create admin function
 export const createAdmin = async (req, res) => {
+     // Check for secret key in headers to authorize admin creation
     const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
     return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
   
+  // Validate required fields
     const {name,email, password } = req.body
     if(!name || !email || !password){
         return res.status(400).json({message: "Please All Fields are mandatory"})
     }    
 try{
+    // Check if admin already exists
     const admin = await Admin.findOne({email})
         if(admin){
             return res.status(400).json({message: "This user already exists"})
         }
         
-        
+        // Generate OTP and its expiry time
     const otp = Math.floor(100000 + Math.random() * 900000);
     const otpExpires = String(new Date(Date.now() + 1000 * 60 * 5)); 
 
-        
-        
+        // Hash the password
         const salt = await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password, salt)
+
+        //create new Admin
         const newAdmin = new Admin({
             ...req.body,
            password:hashedPassword,
@@ -33,6 +39,8 @@ try{
            otpExpires
         })
         await newAdmin.save()
+
+         // Send OTP via email
     const mail = {
       mailFrom: process.env.EMAIL_USER,
       mailTo: email,

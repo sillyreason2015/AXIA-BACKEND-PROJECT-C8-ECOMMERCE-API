@@ -1,6 +1,7 @@
 import Admin from "../../schema/adminSchema.js";
 
 export const deleteAdmin = async (req, res) => {
+  // Check for secret key in headers to authorize admin deletion
     const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
@@ -8,6 +9,8 @@ export const deleteAdmin = async (req, res) => {
   }
     const {id} = req.params
     const {_id} = req.admin
+    
+     // Ensure the requesting admin is the same as the admin being deleted
     if(_id.toString() !== id){
         return res.status(400).json({message: "You are not authorized to carry out this action"})
     }

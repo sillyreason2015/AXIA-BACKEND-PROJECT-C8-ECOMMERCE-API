@@ -1,13 +1,15 @@
 import User from '../../schema/userSchema.js'
 import Admin from '../../schema/adminSchema.js'
 
-
+//view a single user
 export const viewUser = async (req, res) => {
+    // function to check if the request has a valid admin secret key.
      const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
     return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
+
     try{
         if(Admin){
     const user = await User.findById(req.params.id).select('-password -_id -createdAt -updatedAt -__v')
@@ -21,7 +23,9 @@ export const viewUser = async (req, res) => {
     
 }
 
+//View all users
 export const viewUsers = async (req, res) => {
+    // function to check if the request has a valid admin secret key.
      const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
@@ -39,8 +43,9 @@ export const viewUsers = async (req, res) => {
     }
 }
 
-
+//view user by params
 export const getByParams = async (req, res) => {
+    // function to check if the request has a valid admin secret key.
      const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
@@ -59,8 +64,9 @@ export const getByParams = async (req, res) => {
 }
 
 
-
+//delete a user
 export const deleteUser = async (req, res) => {
+    // function to check if the request has a valid admin secret key.
      const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)

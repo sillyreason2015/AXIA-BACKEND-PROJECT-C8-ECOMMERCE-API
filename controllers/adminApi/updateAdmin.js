@@ -1,11 +1,15 @@
 import Admin from "../../schema/adminSchema.js";
 import bcrypt from 'bcrypt'
+//Update an administrator's profile or password
 export const updateAdmin = async (req, res) => {
+  //check if the admin is authorized using the header
     const secretKey = req.headers['secretkey']
   if ( !secretKey || secretKey.toString() !== process.env.ADMIN_SECRET.toString()) {
     console.log(req.headers)
     return res.status(403).json({ message: "Forbidden. You are not authorized to access this page." });
   }
+
+  //Only allow admins to update their own profile
     const {id} = req.params
     const{_id} = req.admin
         if(_id.toString() !== id){
@@ -16,12 +20,17 @@ export const updateAdmin = async (req, res) => {
            const adminUpdate = {
             ...req.body,
            }
-           
+            // If password is being updated, hash it before saving
            if(adminUpdate.password){
             const salt = await bcrypt.genSalt(10)
             adminUpdate.password = await bcrypt.hash(adminUpdate.password, salt)
            }
-           const admin = await Admin.findByIdAndUpdate(id, adminUpdate, {new: true, runValidators: true})
+            // Update admin document with new data
+           const admin = await Admin.findByIdAndUpdate(
+            id, 
+            adminUpdate, 
+            {new: true, runValidators: true}
+          )
            
            if(!admin){
             return res.status(404).json({message: "Administrator Does not exist"})
