@@ -23,6 +23,6 @@ export const sendMail = async ({ mailFrom, mailTo, subject, body }) => {
             html: body, 
         });
     } catch (error) {
-        res.status(500).json({message: error.message});
+        throw error
     }
 };
